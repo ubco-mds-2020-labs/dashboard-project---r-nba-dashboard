@@ -89,7 +89,8 @@ plot_R <- function(xcol, ycol){
     geom_bar(position="stack", stat="identity") +
     ylab("Points") +
     ggtitle('Average Points by Season') +
-    scale_fill_manual("Points_type", values = c('2 Point' = 'steelblue2', '3 Point' = 'darkorange', 'Free throws' = 'coral2')) + 
+    scale_fill_manual("Points_type", values = c('2 Point' = 'steelblue2', '3 Point' = 'darkorange', 'Free throws' = 'coral2')) +
+    scale_x_continuous(breaks = df_chart_1$Season) +
     theme(
       axis.text.x = element_text(angle = 90),
       legend.position="bottom",
@@ -115,6 +116,7 @@ plot_R <- function(xcol, ycol){
     stat_summary(fun = mean, geom = 'line', size=1, color='steelblue2') +
     ylab("Assists") +
     ggtitle('Average Assists by Season') +
+    scale_x_continuous(breaks = df_chart_2$Season) +
     theme(
       axis.text.x = element_text(angle = 90),
       legend.position="none",
@@ -141,6 +143,7 @@ plot_R <- function(xcol, ycol){
     ylab("Rebounds") +
     ggtitle('Average Rebounds by Season') +
     scale_fill_manual("Rebound_type", values = c('Defensive Rebounds' = 'steelblue2', 'Offensive Rebounds' = 'darkorange')) + 
+    scale_x_continuous(breaks = df_chart_3$Season) +
     theme(
       axis.text.x = element_text(angle = 90),
       legend.position="bottom",
@@ -167,6 +170,7 @@ plot_R <- function(xcol, ycol){
     ylab("Count") +
     ggtitle('Average Blocks & Steals by Season') +
     scale_color_manual("Blocks.Steals", values = c('Blocks' = 'steelblue2', 'Steals' = 'darkorange')) +
+    scale_x_continuous(breaks = df_chart_4$Season) +
     theme(
       axis.text.x = element_text(angle = 90),
       legend.position="bottom",
@@ -194,6 +198,7 @@ plot_R <- function(xcol, ycol){
     scale_color_manual("Turnovers.Fouls", values = c('Fouls' = 'steelblue2', 'Turnovers' = 'darkorange')) +
     # maximum value for turnovers or fouls in our dataset is 6.25
     ylim(0, 6.25) +
+    scale_x_continuous(breaks = df_chart_5$Season) +
     theme(
       axis.text.x = element_text(angle = 90),
       legend.position="bottom",
@@ -225,6 +230,7 @@ plot_R <- function(xcol, ycol){
     ylab("Shooting Percentage") +
     ggtitle('Average Shooting Percentages by Season') +
     scale_color_manual("X2PT_3PT_eFG", values = c('2PT_%' = 'steelblue2', '3PT_%' = 'darkorange', 'eFG_%' = 'darkred')) +
+    scale_x_continuous(breaks = df_chart_11$Season) +
     theme(
       axis.text.x = element_text(angle = 90),
       legend.position="bottom",
@@ -250,6 +256,7 @@ plot_R <- function(xcol, ycol){
     geom_bar(stat="identity", fill="steelblue2") +
     ylab("True Shooting Percentage") +
     ggtitle('True Shooting Percentage by Season') +
+    scale_x_continuous(breaks = df_chart_12$Season) +
     theme(
       axis.text.x = element_text(angle = 90),
       legend.position="none",
@@ -274,6 +281,7 @@ plot_R <- function(xcol, ycol){
     geom_bar(stat="identity", fill="steelblue2") +
     ylab("Game Score") +
     ggtitle('Player Productivity by Season') +
+    scale_x_continuous(breaks = df_chart_13$Season) +
     theme(
       axis.text.x = element_text(angle = 90),
       legend.position="none",
@@ -292,16 +300,21 @@ plot_R <- function(xcol, ycol){
 
 # Player Productivity by Minutes Played (chart 14)
 
-plot_R <- function(xcol, ycol){
-  chart <- ggplot(subset(df_chart_13, Player == xcol)) + 
+plot_R <- function(xcol){
+  sub_chart = subset(df_chart_13, Player == xcol)
+  min_min <- trunc(min(sub_chart$Minutes.Played),0)
+  max_min <- trunc(max(sub_chart$Minutes.Played) + 1,0)
+  min_range <- seq(min_min, max_min, 1)
+  chart <- ggplot(sub_chart) + 
     aes(x = Minutes.Played, y = Game.Score) +
     geom_point(aes(colour = Stage), size=1.8) +
     ylab("Game Score") +
     xlab("Minutes Played") +
     ggtitle('Player Productivity by Minutes Played') +
     scale_color_manual("Stage", values = c('Playoffs' = 'steelblue2', 'Regular_Season' = 'darkorange')) +
+    scale_x_continuous(breaks = min_range) +
     theme(
-      axis.text.x = element_text(angle = 90),
+      axis.text.x = element_text(angle = 0),
       legend.position="bottom",
       legend.title=element_blank(),
       plot.title = element_text(hjust = 0.5),
