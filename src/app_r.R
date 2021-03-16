@@ -94,25 +94,40 @@ cards <- dbcRow(
 
 Players <- unique(chart_1$Player)
 
+option_player <- lapply(Players,
+                           function(available_indicator) {
+
+                             list(label = available_indicator,
+                                  value = available_indicator)
+                           })
+
 # dropdowns
 first_dropdown = htmlDiv(
   list(
     dccDropdown(
       id='player-widget',
-      options = Players,
+      options = option_player,
       value='Kobe Bryant'  # REQUIRED to show the plot on the first page load
       )
   )#,
   #style={"width": "100%"}
 )
 
-Stage <- unique(chart_2$Stage)
+Stages <- unique(chart_2$Stage)
+
+option_stage <- lapply(Stages,
+                           function(available_indicator) {
+
+                             list(label = available_indicator,
+                                  value = available_indicator)
+                           })
+
 second_dropdown = htmlDiv(
   list(
     dccDropdown(
       id='stage-widget',
       #style={'width': '250px'},
-      options=Stage,
+      options=option_stage,
       value='Regular_Season'  # REQUIRED to show the plot on the first page load
       )
   )#,
@@ -237,7 +252,7 @@ app$callback(
   function(player, stage){
     tmp1 <- filter(metrics, Player == player & Stage == stage)
     career_FG <- tmp1$career_FG_.
-  (str(career_FG) + ' %')
+    paste0(career_FG, ' %')
   }
 )
 
@@ -247,8 +262,8 @@ app$callback(
     input('stage-widget', 'value')),
   function(player, stage){
     tmp2 <- filter(metrics, Player == player & Stage == stage)
-    career_FT <- tmp2$career_FG_.
-  (str(career_FT) + ' %')
+    career_FT <- tmp2$career_FT_.
+    paste0(career_FT, ' %')
   }
 )
 
@@ -259,7 +274,7 @@ app$callback(
   function(player, stage){
     tmp3 <- filter(metrics, Player == player & Stage == stage)
     career_3PT <- tmp3$career_3PT_.
-  (str(career_3PT) + ' %')
+    paste0(career_3PT, ' %')
   }
 )
 
@@ -270,7 +285,7 @@ app$callback(
   function(player, stage){
     tmp4 <- filter(metrics, Player == player & Stage == stage)
     avg_minutes <- tmp4$Minutes_per_game
-  str(avg_minutes) + ' minutes'
+    paste0(avg_minutes, ' minutes')
   }
 )
  
@@ -279,8 +294,8 @@ app$callback(
   output('chart-1', 'figure'),
   list(input('player-widget', 'value'),
        input('stage-widget', 'value')),
-  function(xcol, ycol) {
-    p <- ggplot(subset(chart_1,Player == 'Kobe Bryant' & Stage == 'Regular_Season')) + 
+  function(input1, input2) {
+    p <- ggplot(subset(chart_1,Player == input1 & Stage == input2)) + 
       aes(x = Season, y = Points_per_game,  fill = Points_type) +
       stat_summary(fun = mean, position = 'stack', geom = 'bar') +
       ylim(0, 40) + 
@@ -309,8 +324,8 @@ app$callback(
   list(input('player-widget', 'value'),
        input('stage-widget', 'value')
   ),
-  function(xcol, ycol) {
-    p <- ggplot(subset(chart_2,Player == 'Kobe Bryant' & Stage == 'Regular_Season')) + 
+  function(input1, input2) {
+    p <- ggplot(subset(chart_2,Player == input1 & Stage == input2)) + 
       aes(x = Season, y = Assists_per_game, colour = 'blue') +
       stat_summary(fun = mean, geom = 'line', size =2) +
       ylab("Assists") +
@@ -337,8 +352,8 @@ app$callback(
   list(input('player-widget', 'value'),
        input('stage-widget', 'value')
   ),
-  function(xcol, ycol) {
-    p <- ggplot(subset(chart_3,Player == 'Kobe Bryant' & Stage == 'Regular_Season')) + 
+  function(input1, input2) {
+    p <- ggplot(subset(chart_3,Player == input1 & Stage == input2)) + 
       aes(x = Season, y = Rebounds_per_game,  fill = Rebound_type) +
       stat_summary(fun = mean, position = 'stack', geom = 'bar') +
       ylab("Rebounds") +
@@ -367,8 +382,8 @@ app$callback(
   list(input('player-widget', 'value'),
        input('stage-widget', 'value')
   ),
-  function(xcol, ycol) {
-    p <- ggplot(subset(chart_4,Player == 'Kobe Bryant' & Stage == 'Regular_Season')) + 
+  function(input1, input2) {
+    p <- ggplot(subset(chart_4,Player == input1 & Stage == input2)) + 
       aes(x = Season, y = per_game, colour = Blocks.Steals) +
       stat_summary(fun = mean, geom = 'line', size =2) +
       ylab("Count") +
@@ -399,8 +414,8 @@ app$callback(
   list(input('player-widget', 'value'),
        input('stage-widget', 'value')
   ),
-  function(xcol, ycol) {
-    p <- ggplot(subset(chart_5,Player == 'Kobe Bryant' & Stage == 'Regular_Season')) + 
+  function(input1, input2) {
+    p <- ggplot(subset(chart_5,Player == input1 & Stage == input2)) + 
       aes(x = Season, y = per_game, colour = Turnovers.Fouls) +
       stat_summary(fun = mean, geom = 'line', size =2) +
       ylab("Count") +
