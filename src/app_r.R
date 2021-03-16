@@ -203,17 +203,17 @@ tab1_content <- htmlDiv(
     dbcRow(
       list(
         dbcCol(
-          htmlDiv(
+          dccGraph(
             id='chart-1',
  #           style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '345px', 'height': '300px'}
  ), width = 4),
         dbcCol(
-          htmlDiv(
+          dccGraph(
             id='chart-2',
 #            style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '345px', 'height': '300px'}
 ), width = 4),
         dbcCol(
-          htmlDiv(
+          dccGraph(
             id='chart-3',
  #           style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '345px', 'height': '300px'}
  ), width = 4)
@@ -223,7 +223,7 @@ tab1_content <- htmlDiv(
     dbcRow(
       list(
         dbcCol(
-          htmlDiv(
+          dccGraph(
             id='chart-4',
             #style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}
 ), width = 6)
@@ -266,7 +266,7 @@ app$layout(
 )
 
 app$callback(
-  output('chart-1', 'children'),
+  output('chart-1', 'figure'),
   list(input('player-widget', 'value'),
        input('stage-widget', 'value')),
   function(xcol, ycol) {
@@ -295,7 +295,7 @@ app$callback(
 )
 
 app$callback(
-  output('chart-2', 'children'),
+  output('chart-2', 'figure'),
   list(input('player-widget', 'value'),
        input('stage-widget', 'value')
   ),
@@ -323,7 +323,7 @@ app$callback(
 )
 
 app$callback(
-  output('chart-3', 'children'),
+  output('chart-3', 'figure'),
   list(input('player-widget', 'value'),
        input('stage-widget', 'value')
   ),
@@ -353,7 +353,7 @@ app$callback(
 )
 
 app$callback(
-  output('chart-4', 'children'),
+  output('chart-4', 'figure'),
   list(input('player-widget', 'value'),
        input('stage-widget', 'value')
   ),
