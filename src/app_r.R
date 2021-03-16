@@ -66,45 +66,6 @@ fourth_card = dbcCard(
   color='secondary'#, inverse=True#, style={'text-align': 'center'}
 )
 
-fifth_card = dbcCard(
-  dbcCardBody(children=
-     list(
-       htmlP("Career FG%", className="card-title"),
-       htmlH5(id="card-05")
-     )
-  ),
-  color='info'#, inverse=True#, style={'text-align': 'center'}
-)
-
-sixth_card = dbcCard(
-  dbcCardBody(children=
-     list(
-       htmlP("Career FT%", className="card-title"),
-       htmlH5(id="card-06")
-     )
-  ),
-  color='secondary'#, inverse=True#, style={'text-align': 'center'}
-)
-
-seventh_card = dbcCard(
-  dbcCardBody(children=
-     list(
-       htmlP("Career 3-pt %", className="card-title"),
-       htmlH5(id="card-07")
-     )
-  ),
-  color='info'#, inverse=True, style={'text-align': 'center'}
-)
-
-eighth_card = dbcCard(
-  dbcCardBody(children=
-     list(
-       htmlP("Avg Minutes per game", className="card-title"),
-       htmlH5(id="card-08")
-     )
-  ),
-  color='secondary'#, inverse=True, style={'text-align': 'center'}
-)
 
 cards <- dbcRow(
   list(
@@ -116,14 +77,14 @@ cards <- dbcRow(
 )
 
 
-cards_tab2 <- dbcRow(
-  list(
-    dbcCol(fifth_card, width=3), 
-    dbcCol(sixth_card, width=3),
-    dbcCol(seventh_card, width=3), 
-    dbcCol(eighth_card, width=3)
-  )
-)
+#cards_tab2 <- dbcRow(
+#  list(
+ #   dbcCol(fifth_card, width=3), 
+ #   dbcCol(sixth_card, width=3),
+ #   dbcCol(seventh_card, width=3), 
+ #   dbcCol(eighth_card, width=3)
+ # )
+#)
 
 
 
@@ -138,10 +99,10 @@ first_dropdown = htmlDiv(
   list(
     dccDropdown(
       id='player-widget',
-      value=str('Kobe Bryant'),  # REQUIRED to show the plot on the first page load
-      options = Players 
+      options = Players,
+      value='Kobe Bryant'  # REQUIRED to show the plot on the first page load
       )
-  ),
+  )#,
   #style={"width": "100%"}
 )
 
@@ -151,10 +112,10 @@ second_dropdown = htmlDiv(
     dccDropdown(
       id='stage-widget',
       #style={'width': '250px'},
-      value=str('Regular_Season'),  # REQUIRED to show the plot on the first page load
-      options=Stage
+      options=Stage,
+      value='Regular_Season'  # REQUIRED to show the plot on the first page load
       )
-  ),
+  )#,
   #style={"width": "100%"}
 )
 
@@ -226,12 +187,12 @@ tab1_content <- htmlDiv(
           dccGraph(
             id='chart-4',
             #style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}
-), width = 6)
-   #     dbcCol(
-   #       htmlIframe(
-        #    id='chart-5',
+), width = 6),
+        dbcCol(
+          dccGraph(
+            id='chart-5',
             #style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}
-#), width = 6)
+), width = 6)
       )
     )
   )
@@ -264,6 +225,55 @@ app$layout(
     )
   )
 )
+
+
+# Set up callbacks/backend
+
+# metrics
+app$callback(
+  output("card-01", "children"), 
+  list(input("player-widget", "value"),
+    input('stage-widget', 'value')),
+  function(player, stage){
+    tmp1 <- filter(metrics, Player == player & Stage == stage)
+    career_FG <- tmp1$career_FG_.
+  (str(career_FG) + ' %')
+  }
+)
+
+app$callback(
+  output("card-02", "children"), 
+  list(input("player-widget", "value"),
+    input('stage-widget', 'value')),
+  function(player, stage){
+    tmp2 <- filter(metrics, Player == player & Stage == stage)
+    career_FT <- tmp2$career_FG_.
+  (str(career_FT) + ' %')
+  }
+)
+
+app$callback(
+  output("card-03", "children"), 
+  list(input("player-widget", "value"),
+  input('stage-widget', 'value')),
+  function(player, stage){
+    tmp3 <- filter(metrics, Player == player & Stage == stage)
+    career_3PT <- tmp3$career_3PT_.
+  (str(career_3PT) + ' %')
+  }
+)
+
+app$callback(
+  output("card-04", "children"), 
+  list(input("player-widget", "value"),
+       input('stage-widget', 'value')),
+  function(player, stage){
+    tmp4 <- filter(metrics, Player == player & Stage == stage)
+    avg_minutes <- tmp4$Minutes_per_game
+  str(avg_minutes) + ' minutes'
+  }
+)
+ 
 
 app$callback(
   output('chart-1', 'figure'),
@@ -384,7 +394,36 @@ app$callback(
 )
 
 
-
+app$callback(
+  output('chart-5', 'figure'),
+  list(input('player-widget', 'value'),
+       input('stage-widget', 'value')
+  ),
+  function(xcol, ycol) {
+    p <- ggplot(subset(chart_5,Player == 'Kobe Bryant' & Stage == 'Regular_Season')) + 
+      aes(x = Season, y = per_game, colour = Turnovers.Fouls) +
+      stat_summary(fun = mean, geom = 'line', size =2) +
+      ylab("Count") +
+      ggtitle('Average Turnovers and Fouls by Season') +
+      scale_x_continuous(breaks = chart_2$Season) +
+      theme(
+        axis.text.x = element_text(angle = 90),
+        legend.position="bottom",
+        legend.title=element_blank(),
+        legend.key = element_rect(fill='white'),
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major.x=element_blank(),
+        panel.grid.minor.x=element_blank(),
+        panel.grid.major.y=element_line(colour = 'lightgrey'),
+        panel.grid.minor.y=element_blank(),
+        panel.background=element_rect(fill="white"),
+        axis.line = element_line(colour = 'black'),
+        axis.title.x = element_text(face = 'bold', vjust=-0.5), axis.title.y=element_text(vjust=0.1)
+      ) +
+      guides(size = 'none', colour = 'legend')
+    ggplotly(p)
+  }
+)
 
 app$run_server(debug = T)
 

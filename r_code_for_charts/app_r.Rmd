@@ -170,4 +170,12 @@ ggplot(subset(chart_5,Player == 'Kobe Bryant' & Stage == 'Regular_Season')) +
 
 
 
+```{r}
+career_FT = df_metrics[(df_metrics['Player'] == player) & (df_metrics['Stage'] == stage)]['career_FT_%'].iloc[0]
+```
+
+```{r}
+tmp <- filter(metrics, Player == 'Kobe Bryant' & Stage == 'Regular_Season')
+tmp$Minutes_per_game
+```
 
