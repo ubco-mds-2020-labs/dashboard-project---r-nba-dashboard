@@ -6,16 +6,20 @@ library(ggplot2)
 library(plotly)
 
 
-metrics <- read.csv('../data/r_dashboard_csv/metrics.csv')
-chart_1 <- read.csv('../data/r_dashboard_csv/df_chart_1.csv')
-chart_2 <- read.csv('../data/r_dashboard_csv/df_chart_2.csv')
-chart_3 <- read.csv('../data/r_dashboard_csv/df_chart_3.csv')
-chart_4 <- read.csv('../data/r_dashboard_csv/df_chart_4.csv')
-chart_5 <- read.csv('../data/r_dashboard_csv/df_chart_5.csv')
-chart_11 <- read.csv('../data/r_dashboard_csv/df_chart_11.csv')
-chart_12 <- read.csv('../data/r_dashboard_csv/df_chart_12.csv')
-chart_13 <- read.csv('../data/r_dashboard_csv/df_chart_13.csv')
+# metrics data
+metrics <- read.csv('https://raw.githubusercontent.com/ubco-mds-2020-labs/dashboard-project---r-nba-dashboard/master/data/r_dashboard_csv/metrics.csv')[,-1]
 
+# tab 1 data
+chart_1 <- read.csv('https://raw.githubusercontent.com/ubco-mds-2020-labs/dashboard-project---r-nba-dashboard/master/data/r_dashboard_csv/df_chart_1.csv')[,-1]
+chart_2 <- read.csv('https://raw.githubusercontent.com/ubco-mds-2020-labs/dashboard-project---r-nba-dashboard/master/data/r_dashboard_csv/df_chart_2.csv')[,-1]
+chart_3 <- read.csv('https://raw.githubusercontent.com/ubco-mds-2020-labs/dashboard-project---r-nba-dashboard/master/data/r_dashboard_csv/df_chart_3.csv')[,-1]
+chart_4 <- read.csv('https://raw.githubusercontent.com/ubco-mds-2020-labs/dashboard-project---r-nba-dashboard/master/data/r_dashboard_csv/df_chart_4.csv')[,-1]
+chart_5 <- read.csv('https://raw.githubusercontent.com/ubco-mds-2020-labs/dashboard-project---r-nba-dashboard/master/data/r_dashboard_csv/df_chart_5.csv')[,-1]
+
+# tab 2 data
+chart_11 <- read.csv('https://raw.githubusercontent.com/ubco-mds-2020-labs/dashboard-project---r-nba-dashboard/master/data/r_dashboard_csv/df_chart_11.csv')[,-1]
+chart_12 <- read.csv('https://raw.githubusercontent.com/ubco-mds-2020-labs/dashboard-project---r-nba-dashboard/master/data/r_dashboard_csv/df_chart_12.csv')[,-1]
+chart_13 <- read.csv('https://raw.githubusercontent.com/ubco-mds-2020-labs/dashboard-project---r-nba-dashboard/master/data/r_dashboard_csv/df_chart_13.csv')[,-1]
 
 #------------------------------------------------------------#
 # Setup app and layout/frontend
