@@ -4,6 +4,7 @@ library(dashHtmlComponents)
 library(dashBootstrapComponents)
 library(ggplot2)
 library(plotly)
+library(stringr)
 
 
 # metrics data
@@ -895,7 +896,7 @@ app$callback(
   }
   chart <- ggplot(df_chart_23) + 
     aes(x = Season, y = .data[[stat_lab]], fill = Type) +
-    geom_col(position = position_dodge(0.9), width = 0.8) +
+    geom_col(position = position_dodge(0.8), width = 0.7) +
     ggtitle(statistic) +
     scale_fill_manual("Type", values = c('Playoffs' = 'steelblue2', 'Regular Season' = 'darkorange')) + 
     theme(
