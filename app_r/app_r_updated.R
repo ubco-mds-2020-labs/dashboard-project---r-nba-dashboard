@@ -913,7 +913,7 @@ app$callback(
       axis.title.x = element_text(vjust=-0.5), 
       axis.title.y = element_blank()
     )
-  return(ggplotly(chart) %>% layout(legend = list(orientation = 'h', y= -0.32)))
+  return(ggplotly(chart) %>% layout(legend = list(orientation = 'h', y= 1.15)))
 }
 )
 
