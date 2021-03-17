@@ -235,16 +235,18 @@ tab2_content = htmlDiv(
     dbcRow(
       list(
         dbcCol(
-          htmlIframe(
+          dccGraph(
             id='chart-11',
             #style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}), width = 6
-            )
+            ),
+            width = 6
         ),
         dbcCol(
-          htmlIframe(
+          dccGraph(
             id='chart-12',
             #style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}), width = 6
-            )
+            ),
+            width = 6
           )
       )
     ),
@@ -253,19 +255,30 @@ tab2_content = htmlDiv(
     dbcRow(
       list(
         dbcCol(
-          htmlIframe(
+          dccGraph(
             id='chart-13',
            # style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}), width = 6
-          )
+          ),
+          width = 6
         ),
         dbcCol(
-          htmlIframe(
+          dccGraph(
             id='chart-14',
            # style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}), width = 6
-           )
+           ),
+           width = 6
         )
       )
     )
+  )
+)
+
+tab3_content = htmlDiv(
+  list(
+    htmlH2("Third tab"),    
+    #dropdowns3,
+    htmlBr(),
+    htmlH2("sample text")
   )
 )
 
@@ -276,10 +289,27 @@ tabs = htmlDiv(
       list(
         dbcTab(children=list(
           htmlBr(),
-          tab1_content,
+          tab1_content
+        ),
+        label="Player stats"
+       # style={"padding": "10px"},
+       # label_style={"color": "#4682B4", "font-weight": "bold", "font-size": "larger", "background-color": "#f4f6f6"},
+       # active_label_style={"color": "#DC143C", "font-weight": "bold", "font-size": "larger", "background-color": "#FFEFD5"}
+        ),
+          dbcTab(children=list(
+          htmlBr(),
           tab2_content
         ),
-        label="Player stats",
+        label="Advanced Analytics"
+       # style={"padding": "10px"},
+       # label_style={"color": "#4682B4", "font-weight": "bold", "font-size": "larger", "background-color": "#f4f6f6"},
+       # active_label_style={"color": "#DC143C", "font-weight": "bold", "font-size": "larger", "background-color": "#FFEFD5"}
+        ),
+        dbcTab(children=list(
+          htmlBr(),
+          tab3_content
+        ),
+        label="NBA Trends"
         #label="Advanced Analytics"
        # style={"padding": "10px"},
        # label_style={"color": "#4682B4", "font-weight": "bold", "font-size": "larger", "background-color": "#f4f6f6"},
@@ -594,8 +624,8 @@ app$callback(
 # Player Productivity by Minutes Played (chart 14)
 
 app$callback(
-  output('chart-11', 'figure'),
-  input('player-widget-2', 'value'),
+  output('chart-14', 'figure'),
+  list(input('player-widget-2', 'value')),
   function(xcol){
   sub_chart = subset(chart_13, Player == xcol)
   min_min <- trunc(min(sub_chart$Minutes.Played),0)
