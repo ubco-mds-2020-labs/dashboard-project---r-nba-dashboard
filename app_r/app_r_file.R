@@ -113,7 +113,7 @@ plot_R <- function(xcol, ycol){
 plot_R <- function(xcol, ycol){
   chart <- ggplot(subset(df_chart_2,Player == xcol & Stage == ycol)) + 
     aes(x = Season, y = Assists_per_game) +
-    stat_summary(fun = mean, geom = 'line', size=1, color='steelblue2') +
+    geom_line(size=1, color='steelblue2') +
     ylab("Assists") +
     ggtitle('Average Assists by Season') +
     scale_x_continuous(breaks = df_chart_2$Season) +
@@ -166,7 +166,7 @@ plot_R <- function(xcol, ycol){
 plot_R <- function(xcol, ycol){
   chart <- ggplot(subset(df_chart_4,Player == xcol & Stage == ycol)) + 
     aes(x = Season, y = per_game, color = Blocks.Steals) +
-    stat_summary(fun = mean, geom = 'line', size=1) +
+    geom_line(size=1) +
     ylab("Count") +
     ggtitle('Average Blocks & Steals by Season') +
     scale_color_manual("Blocks.Steals", values = c('Blocks' = 'steelblue2', 'Steals' = 'darkorange')) +
@@ -192,7 +192,7 @@ plot_R <- function(xcol, ycol){
 plot_R <- function(xcol, ycol){
   chart <- ggplot(subset(df_chart_5,Player == xcol & Stage == ycol)) + 
     aes(x = Season, y = per_game, color = Turnovers.Fouls) +
-    stat_summary(fun = mean, geom = 'line', size=1) +
+    geom_line(size=1) +
     ylab("Count") +
     ggtitle('Average Turnovers & Fouls by Season') +
     scale_color_manual("Turnovers.Fouls", values = c('Fouls' = 'steelblue2', 'Turnovers' = 'darkorange')) +
@@ -226,7 +226,7 @@ plot_R <- function(xcol, ycol){
 plot_R <- function(xcol, ycol){
   chart <- ggplot(subset(df_chart_11,Player == xcol & Stage == ycol)) + 
     aes(x = Season, y = per_game, color = X2PT_3PT_eFG) +
-    stat_summary(fun = mean, geom = 'line', size=1.0) +
+    geom_line(size=1) +
     ylab("Shooting Percentage") +
     ggtitle('Average Shooting Percentages by Season') +
     scale_color_manual("X2PT_3PT_eFG", values = c('2PT_%' = 'steelblue2', '3PT_%' = 'darkorange', 'eFG_%' = 'darkred')) +
@@ -328,6 +328,47 @@ plot_R <- function(xcol){
     )
   return(ggplotly(chart)%>% layout(legend = list(orientation = 'h', y= -0.2)))
 }
+
+
+
+
+
+# Functions for charts for tab 3
+
+# Simple statistic line graph by Season (chart 21)
+
+simple_stat <- function(statistic){
+  leave_list = c('Average Player Minutes Played per Game', 'Average Player Weight (lbs)', 'Average Player Height (cm)', 'Average Player Body Mass Index', 'Ratio of Field Goals That Are 3-pointers')
+  stat_lab <- str_replace(subset(df_tab_3_dropdown, stat_name == statistic)[,2], "/", ".")
+  stat_lab <- str_replace(stat_lab, "3", "X3")
+  if (statistic %in% leave_list != TRUE){
+    statistic <- paste(statistic, "per Team")
+  }
+  chart <- ggplot(df_chart_21) + 
+    aes(x = Season, y = .data[[stat_lab]]) +
+    geom_line(aes(group=1), size = 1, color='darkred') +
+    ggtitle(statistic) +
+    theme(
+      axis.text.x = element_text(angle = 90, vjust = 0.4),
+      legend.position="none",
+      legend.title=element_blank(),
+      plot.title = element_text(hjust = 0.5),
+      panel.grid.major.x=element_blank(),
+      panel.grid.minor.x=element_blank(),
+      panel.grid.major.y=element_line(colour = 'lightgrey'),
+      panel.grid.minor.y=element_blank(),
+      panel.background=element_rect(fill="white"),
+      axis.line = element_line(colour = 'black'),
+      axis.title.x = element_text(vjust=-0.5), 
+      axis.title.y = element_blank()
+    )
+  return(ggplotly(chart))
+}
+
+
+# Statistic vs. age chart (chart 22)
+
+
 
 
 
