@@ -573,7 +573,7 @@ app$callback(
         axis.line = element_line(colour = 'black'),
         axis.title.x = element_text(vjust=-0.5), axis.title.y=element_text(vjust=0.1)
       )
-    return(ggplotly(p) %>% layout(legend = list(orientation = 'h', y= -0.2)))
+    return(ggplotly(p) %>% layout(legend = list(orientation = 'h', y= -0.3)))
   }
 )
 
@@ -632,7 +632,7 @@ app$callback(
         axis.line = element_line(colour = 'black'),
         axis.title.x = element_text(vjust=-0.5), axis.title.y=element_text(vjust=0.1)
       )
-    return(ggplotly(chart) %>% layout(legend = list(orientation = 'h', y= -0.2)))
+    return(ggplotly(chart) %>% layout(legend = list(orientation = 'h', y= -0.3)))
   }
 )
 
@@ -707,7 +707,6 @@ app$callback(
   chart <- ggplot(subset(chart_11,Player == xcol & Stage == ycol)) + 
     aes(x = Season, y = per_game, color = X2PT_3PT_eFG) +
     stat_summary(fun = mean, geom = 'line', size=1.0) +
-    xlab("") +
     ylab("Shooting Percentage") +
     ggtitle('Average Shooting Percentages by Season') +
     scale_color_manual("X2PT_3PT_eFG", values = c('2PT_%' = 'steelblue3', '3PT_%' = 'darkorange', 'eFG_%' = 'darkred')) +
@@ -725,7 +724,7 @@ app$callback(
       axis.line = element_line(colour = 'black'),
       axis.title.x = element_text(vjust=-0.5), axis.title.y=element_text(vjust=0.1)
     )
-  return(ggplotly(chart) %>% layout(legend = list(orientation = 'h', y= -0.2)))
+  return(ggplotly(chart) %>% layout(legend = list(orientation = 'h', y= -0.4)))
   }
 )
 
@@ -816,7 +815,7 @@ app$callback(
       axis.line = element_line(colour = 'black'),
       axis.title.x = element_text(vjust=-0.5), axis.title.y=element_text(vjust=0.1)
     )
-  return(ggplotly(chart)%>% layout(legend = list(orientation = 'h', y= -0.2)))
+  return(ggplotly(chart)%>% layout(legend = list(orientation = 'h', y= -0.3)))
   }
 )
 
