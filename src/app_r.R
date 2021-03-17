@@ -33,7 +33,9 @@ first_card = dbcCard(
            htmlH5(id="card-01")
     )
   ),
-  color='info'#, inverse=True#, style={'text-align': 'center'}
+  color='info'
+  , style=list('text-align' = 'center')
+  , inverse = TRUE
 )
 
 second_card = dbcCard(
@@ -43,7 +45,9 @@ second_card = dbcCard(
        htmlH5(id="card-02")
      )
   ),
-  color='secondary'#, inverse=True#, style={'text-align': 'center'}
+  color='secondary'
+  , style=list('text-align' = 'center')
+  , inverse = TRUE
 )
 
 third_card = dbcCard(
@@ -53,7 +57,9 @@ third_card = dbcCard(
        htmlH5(id="card-03")
      )
   ),
-  color='info'#, inverse=True#, style={'text-align': 'center'}
+  color='info'
+  , style=list('text-align' = 'center')
+  , inverse = TRUE
 )
 
 fourth_card = dbcCard(
@@ -63,7 +69,9 @@ fourth_card = dbcCard(
        htmlH5(id="card-04")
      )
   ),
-  color='secondary'#, inverse=True#, style={'text-align': 'center'}
+  color='secondary'
+  , style=list('text-align' = 'center')
+  , inverse = TRUE
 )
 
 
@@ -77,18 +85,63 @@ cards <- dbcRow(
 )
 
 
-#cards_tab2 <- dbcRow(
-#  list(
- #   dbcCol(fifth_card, width=3), 
- #   dbcCol(sixth_card, width=3),
- #   dbcCol(seventh_card, width=3), 
- #   dbcCol(eighth_card, width=3)
- # )
-#)
+fifth_card = dbcCard(
+  dbcCardBody(children=
+    list(
+           htmlP("Career FG%", className="card-title"),
+           htmlH5(id="card-05")
+    )
+  ),
+  color='info'
+  , style=list('text-align' = 'center')
+  , inverse = TRUE
+)
+
+sixth_card = dbcCard(
+  dbcCardBody(children=
+     list(
+       htmlP("Career FT%", className="card-title"),
+       htmlH5(id="card-06")
+     )
+  ),
+  color='secondary'
+  , style=list('text-align' = 'center')
+  , inverse = TRUE
+)
+
+seventh_card = dbcCard(
+  dbcCardBody(children=
+     list(
+       htmlP("Career 3-pt %", className="card-title"),
+       htmlH5(id="card-07")
+     )
+  ),
+  color='info'
+  , style=list('text-align' = 'center')
+  , inverse = TRUE
+)
+
+eighth_card = dbcCard(
+  dbcCardBody(children=
+     list(
+       htmlP("Avg Minutes per game", className="card-title"),
+       htmlH5(id="card-08")
+     )
+  ),
+  color='secondary'
+  , style=list('text-align' = 'center')
+  , inverse = TRUE
+)
 
 
-
-
+cards_tab2 <- dbcRow(
+ list(
+   dbcCol(fifth_card, width=3), 
+   dbcCol(sixth_card, width=3),
+   dbcCol(seventh_card, width=3), 
+   dbcCol(eighth_card, width=3)
+ )
+)
 
 
 
@@ -230,7 +283,7 @@ tab2_content = htmlDiv(
   list(
     dropdowns2,
     htmlBr(),
-    #cards_tab2,
+    cards_tab2,
     htmlBr(),
     dbcRow(
       list(
@@ -380,6 +433,50 @@ app$callback(
     paste0(avg_minutes, ' minutes')
   }
 )
+
+app$callback(
+  output("card-05", "children"), 
+  list(input("player-widget-2", "value"),
+    input('stage-widget-2', 'value')),
+  function(player, stage){
+    tmp1 <- filter(metrics, Player == player & Stage == stage)
+    career_FG <- tmp1$career_FG_.
+    paste0(career_FG, ' %')
+  }
+)
+
+app$callback(
+  output("card-06", "children"), 
+  list(input("player-widget-2", "value"),
+    input('stage-widget-2', 'value')),
+  function(player, stage){
+    tmp2 <- filter(metrics, Player == player & Stage == stage)
+    career_FT <- tmp2$career_FT_.
+    paste0(career_FT, ' %')
+  }
+)
+
+app$callback(
+  output("card-07", "children"), 
+  list(input("player-widget-2", "value"),
+  input('stage-widget-2', 'value')),
+  function(player, stage){
+    tmp3 <- filter(metrics, Player == player & Stage == stage)
+    career_3PT <- tmp3$career_3PT_.
+    paste0(career_3PT, ' %')
+  }
+)
+
+app$callback(
+  output("card-08", "children"), 
+  list(input("player-widget-2", "value"),
+       input('stage-widget-2', 'value')),
+  function(player, stage){
+    tmp4 <- filter(metrics, Player == player & Stage == stage)
+    avg_minutes <- tmp4$Minutes_per_game
+    paste0(avg_minutes, ' minutes')
+  }
+)
  
 
 app$callback(
@@ -392,7 +489,7 @@ app$callback(
       geom_bar(position="stack", stat="identity") +
       ylab("Points") +
       ggtitle('Average Points by Season') +
-      scale_fill_manual("Points_type", values = c('2 Point' = 'steelblue2', '3 Point' = 'darkorange', 'Free throws' = 'coral2')) +
+      scale_fill_manual("Points_type", values = c('2 Point' = 'steelblue3', '3 Point' = 'darkorange', 'Free throws' = 'coral2')) +
       scale_x_continuous(breaks = chart_1$Season) +
       theme(
         axis.text.x = element_text(angle = 90),
@@ -419,7 +516,7 @@ app$callback(
   function(xcol, ycol){
     chart <- ggplot(subset(chart_2,Player == xcol & Stage == ycol)) + 
       aes(x = Season, y = Assists_per_game) +
-      stat_summary(fun = mean, geom = 'line', size=1, color='steelblue2') +
+      stat_summary(fun = mean, geom = 'line', size=1, color='steelblue3') +
       ylab("Assists") +
       ggtitle('Average Assists by Season') +
       scale_x_continuous(breaks = chart_2$Season) +
@@ -451,7 +548,7 @@ app$callback(
       geom_bar(position="stack", stat="identity") +
       ylab("Rebounds") +
       ggtitle('Average Rebounds by Season') +
-      scale_fill_manual("Rebound_type", values = c('Defensive Rebounds' = 'steelblue2', 'Offensive Rebounds' = 'darkorange')) + 
+      scale_fill_manual("Rebound_type", values = c('Defensive Rebounds' = 'steelblue3', 'Offensive Rebounds' = 'darkorange')) + 
       scale_x_continuous(breaks = chart_3$Season) +
       theme(
         axis.text.x = element_text(angle = 90),
@@ -481,7 +578,7 @@ app$callback(
       stat_summary(fun = mean, geom = 'line', size=1) +
       ylab("Count") +
       ggtitle('Average Blocks & Steals by Season') +
-      scale_color_manual("Blocks.Steals", values = c('Blocks' = 'steelblue2', 'Steals' = 'darkorange')) +
+      scale_color_manual("Blocks.Steals", values = c('Blocks' = 'steelblue3', 'Steals' = 'darkorange')) +
       scale_x_continuous(breaks = chart_4$Season) +
       theme(
         axis.text.x = element_text(angle = 90),
@@ -512,7 +609,7 @@ app$callback(
       stat_summary(fun = mean, geom = 'line', size=1) +
       ylab("Count") +
       ggtitle('Average Turnovers & Fouls by Season') +
-      scale_color_manual("Turnovers.Fouls", values = c('Fouls' = 'steelblue2', 'Turnovers' = 'darkorange')) +
+      scale_color_manual("Turnovers.Fouls", values = c('Fouls' = 'steelblue3', 'Turnovers' = 'darkorange')) +
       # maximum value for turnovers or fouls in our dataset is 6.25
       ylim(0, 6.25) +
       scale_x_continuous(breaks = chart_5$Season) +
@@ -545,7 +642,7 @@ app$callback(
     xlab("") +
     ylab("Shooting Percentage") +
     ggtitle('Average Shooting Percentages by Season') +
-    scale_color_manual("X2PT_3PT_eFG", values = c('2PT_%' = 'steelblue2', '3PT_%' = 'darkorange', 'eFG_%' = 'darkred')) +
+    scale_color_manual("X2PT_3PT_eFG", values = c('2PT_%' = 'steelblue3', '3PT_%' = 'darkorange', 'eFG_%' = 'darkred')) +
     scale_x_continuous(breaks = chart_11$Season) +
     theme(
       axis.text.x = element_text(angle = 90),
@@ -574,7 +671,7 @@ app$callback(
   function(xcol, ycol){
   chart <- ggplot(subset(chart_12, Player == xcol & Stage == ycol)) + 
     aes(x = Season, y = True.shooting.percentage) +
-    geom_bar(stat="identity", fill="steelblue2") +
+    geom_bar(stat="identity", fill="steelblue3") +
     ylab("True Shooting Percentage") +
     ggtitle('True Shooting Percentage by Season') +
     scale_x_continuous(breaks = chart_12$Season) +
@@ -605,7 +702,7 @@ app$callback(
   function(xcol, ycol){
   chart <- ggplot(subset(chart_13, Player == xcol & Stage == ycol)) + 
     aes(x = Season, y = Game.Score) +
-    geom_bar(stat="identity", fill="steelblue2") +
+    geom_bar(stat="identity", fill="steelblue3") +
     ylab("Game Score") +
     ggtitle('Player Productivity by Season') +
     scale_x_continuous(breaks = chart_13$Season) +
@@ -642,7 +739,7 @@ app$callback(
     ylab("Game Score") +
     xlab("Minutes Played") +
     ggtitle('Player Productivity by Minutes Played') +
-    scale_color_manual("Stage", values = c('Playoffs' = 'steelblue2', 'Regular_Season' = 'darkorange')) +
+    scale_color_manual("Stage", values = c('Playoffs' = 'steelblue3', 'Regular_Season' = 'darkorange')) +
     scale_x_continuous(breaks = min_range) +
     theme(
       axis.text.x = element_text(angle = 0),
