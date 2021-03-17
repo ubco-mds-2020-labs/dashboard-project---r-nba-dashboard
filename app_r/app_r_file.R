@@ -393,4 +393,33 @@ simple_stat_age <- function(statistic){
 }
 
 
+# Statistic Bar chart for playoffs and regular season (chart 23)
 
+type_stat <- function(statistic){
+  leave_list = c('Average Player Minutes Played per Game', 'Average Player Weight (lbs)', 'Average Player Height (cm)', 'Average Player Body Mass Index', 'Ratio of Field Goals That Are 3-pointers')
+  stat_lab <- str_replace(subset(df_tab_3_dropdown, stat_name == statistic)[,2], "/", ".")
+  stat_lab <- str_replace(stat_lab, "3", "X3")
+  if (statistic %in% leave_list != TRUE){
+    statistic <- paste(statistic, "per Team")
+  }
+  chart <- ggplot(df_chart_23) + 
+    aes(x = Season, y = .data[[stat_lab]], fill = Type) +
+    geom_col(position = position_dodge(0.9), width = 0.8) +
+    ggtitle(statistic) +
+    scale_fill_manual("Type", values = c('Playoffs' = 'steelblue2', 'Regular Season' = 'darkorange')) + 
+    theme(
+      axis.text.x = element_text(angle = 90, vjust = 0.4),
+      legend.position="bottom",
+      legend.title=element_blank(),
+      plot.title = element_text(hjust = 0.5),
+      panel.grid.major.x=element_blank(),
+      panel.grid.minor.x=element_blank(),
+      panel.grid.major.y=element_line(colour = 'lightgrey'),
+      panel.grid.minor.y=element_blank(),
+      panel.background=element_rect(fill="white"),
+      axis.line = element_line(colour = 'black'),
+      axis.title.x = element_text(vjust=-0.5), 
+      axis.title.y = element_blank()
+    )
+  return(ggplotly(chart) %>% layout(legend = list(orientation = 'h', y= -0.32)))
+}
