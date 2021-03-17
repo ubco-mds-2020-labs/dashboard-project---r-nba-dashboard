@@ -237,6 +237,7 @@ tab2_content = htmlDiv(
         dbcCol(
           dccGraph(
             id='chart-11',
+            style=list('width' = '530px', 'height' = '350px')
             #style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}), width = 6
             ),
             width = 6
@@ -244,6 +245,7 @@ tab2_content = htmlDiv(
         dbcCol(
           dccGraph(
             id='chart-12',
+            style=list('width' = '530px', 'height' = '350px')
             #style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}), width = 6
             ),
             width = 6
@@ -257,6 +259,7 @@ tab2_content = htmlDiv(
         dbcCol(
           dccGraph(
             id='chart-13',
+            style=list('width' = '530px', 'height' = '350px')
            # style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}), width = 6
           ),
           width = 6
@@ -264,6 +267,7 @@ tab2_content = htmlDiv(
         dbcCol(
           dccGraph(
             id='chart-14',
+            style=list('width' = '530px', 'height' = '350px')
            # style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}), width = 6
            ),
            width = 6
@@ -538,6 +542,7 @@ app$callback(
   chart <- ggplot(subset(chart_11,Player == xcol & Stage == ycol)) + 
     aes(x = Season, y = per_game, color = X2PT_3PT_eFG) +
     stat_summary(fun = mean, geom = 'line', size=1.0) +
+    xlab("") +
     ylab("Shooting Percentage") +
     ggtitle('Average Shooting Percentages by Season') +
     scale_color_manual("X2PT_3PT_eFG", values = c('2PT_%' = 'steelblue2', '3PT_%' = 'darkorange', 'eFG_%' = 'darkred')) +
