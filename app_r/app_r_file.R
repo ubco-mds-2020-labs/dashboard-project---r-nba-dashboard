@@ -368,7 +368,29 @@ simple_stat <- function(statistic){
 
 # Statistic vs. age chart (chart 22)
 
-
+simple_stat_age <- function(statistic){
+  stat_lab <- str_replace(subset(df_tab_3_dropdown, stat_name == statistic)[,2], "/", ".")
+  stat_lab <- str_replace(stat_lab, "3", "X3")
+  chart <- ggplot(df_chart_22) + 
+    aes(x = Age, y = .data[[stat_lab]]) +
+    geom_line(size = 1, color='grey') +
+    ggtitle(statistic) +
+    theme(
+      axis.text.x = element_text(angle = 90, vjust = 0.4),
+      legend.position="none",
+      legend.title=element_blank(),
+      plot.title = element_text(hjust = 0.5),
+      panel.grid.major.x=element_blank(),
+      panel.grid.minor.x=element_blank(),
+      panel.grid.major.y=element_line(colour = 'lightgrey'),
+      panel.grid.minor.y=element_blank(),
+      panel.background=element_rect(fill="white"),
+      axis.line = element_line(colour = 'black'),
+      axis.title.x = element_text(vjust=-0.5), 
+      axis.title.y = element_blank()
+    )
+  return(ggplotly(chart))
+}
 
 
 
