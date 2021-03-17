@@ -134,13 +134,6 @@ second_dropdown = htmlDiv(
   #style={"width": "100%"}
 )
 
-dropdowns = dbcRow(
-  list(
-    dbcCol(first_dropdown, width=3), 
-    dbcCol(second_dropdown, width=3),
-    dbcCol(htmlH5(''), width=6)
-  )
-)
 
 
 third_dropdown = htmlDiv(
@@ -149,7 +142,7 @@ third_dropdown = htmlDiv(
       id='player-widget-2',
       #style={'width': '250px'},
       value='Kobe Bryant',  # REQUIRED to show the plot on the first page load
-      options=Players
+      options = option_player
      )
   ),
  # style={"width": "100%"}
@@ -161,12 +154,28 @@ fourth_dropdown = htmlDiv(
       id='stage-widget-2',
       #style={'width': '250px'},
       value='Regular_Season',  # REQUIRED to show the plot on the first page load
-      options=Stage
+      options=option_stage
       )
   ),
   #style={"width": "100%"}
 )
 
+dropdowns2 = dbcRow(
+  list(
+    dbcCol(third_dropdown, width=3), 
+    dbcCol(fourth_dropdown, width=3),
+    dbcCol(htmlH5(''), width=6)
+  )
+)
+
+
+dropdowns = dbcRow(
+  list(
+    dbcCol(first_dropdown, width=3), 
+    dbcCol(second_dropdown, width=3),
+    dbcCol(htmlH5(''), width=6)
+  )
+)
 
 
 
@@ -196,6 +205,8 @@ tab1_content <- htmlDiv(
         
       )
     ),
+    htmlBr(),
+    htmlBr(),
     dbcRow(
       list(
         dbcCol(
@@ -213,6 +224,51 @@ tab1_content <- htmlDiv(
   )
 )
 
+
+
+tab2_content = htmlDiv(
+  list(
+    dropdowns2,
+    htmlBr(),
+    #cards_tab2,
+    htmlBr(),
+    dbcRow(
+      list(
+        dbcCol(
+          htmlIframe(
+            id='chart-11',
+            #style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}), width = 6
+            )
+        ),
+        dbcCol(
+          htmlIframe(
+            id='chart-12',
+            #style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}), width = 6
+            )
+          )
+      )
+    ),
+    htmlBr(),
+    htmlBr(),
+    dbcRow(
+      list(
+        dbcCol(
+          htmlIframe(
+            id='chart-13',
+           # style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}), width = 6
+          )
+        ),
+        dbcCol(
+          htmlIframe(
+            id='chart-14',
+           # style={'border-width': '1', 'border-color': '#DCDCDC', 'width': '530px', 'height': '300px'}), width = 6
+           )
+        )
+      )
+    )
+  )
+)
+
 tabs = htmlDiv(
   list(
     htmlH2("NBA Analytics Dashboard"),
@@ -220,9 +276,11 @@ tabs = htmlDiv(
       list(
         dbcTab(children=list(
           htmlBr(),
-          tab1_content
+          tab1_content,
+          tab2_content
         ),
         label="Player stats",
+        #label="Advanced Analytics"
        # style={"padding": "10px"},
        # label_style={"color": "#4682B4", "font-weight": "bold", "font-size": "larger", "background-color": "#f4f6f6"},
        # active_label_style={"color": "#DC143C", "font-weight": "bold", "font-size": "larger", "background-color": "#FFEFD5"}
@@ -297,11 +355,11 @@ app$callback(
   function(input1, input2) {
     p <- ggplot(subset(chart_1,Player == input1 & Stage == input2)) + 
       aes(x = Season, y = Points_per_game,  fill = Points_type) +
-      stat_summary(fun = mean, position = 'stack', geom = 'bar') +
-      ylim(0, 40) + 
+      geom_bar(position="stack", stat="identity") +
       ylab("Points") +
-      ggtitle('Average Game Points by Season') +
-      scale_x_continuous(breaks = chart_3$Season) +
+      ggtitle('Average Points by Season') +
+      scale_fill_manual("Points_type", values = c('2 Point' = 'steelblue2', '3 Point' = 'darkorange', 'Free throws' = 'coral2')) +
+      scale_x_continuous(breaks = chart_1$Season) +
       theme(
         axis.text.x = element_text(angle = 90),
         legend.position="bottom",
@@ -315,7 +373,7 @@ app$callback(
         axis.line = element_line(colour = 'black'),
         axis.title.x = element_text(vjust=-0.5), axis.title.y=element_text(vjust=0.1)
       )
-    ggplotly(p)
+    return(ggplotly(p) %>% layout(legend = list(orientation = 'h', y= -0.2)))
   }
 )
 
@@ -324,16 +382,17 @@ app$callback(
   list(input('player-widget', 'value'),
        input('stage-widget', 'value')
   ),
-  function(input1, input2) {
-    p <- ggplot(subset(chart_2,Player == input1 & Stage == input2)) + 
-      aes(x = Season, y = Assists_per_game, colour = 'blue') +
-      stat_summary(fun = mean, geom = 'line', size =2) +
+  function(xcol, ycol){
+    chart <- ggplot(subset(chart_2,Player == xcol & Stage == ycol)) + 
+      aes(x = Season, y = Assists_per_game) +
+      stat_summary(fun = mean, geom = 'line', size=1, color='steelblue2') +
       ylab("Assists") +
       ggtitle('Average Assists by Season') +
       scale_x_continuous(breaks = chart_2$Season) +
       theme(
         axis.text.x = element_text(angle = 90),
-        legend.position = "none",
+        legend.position="none",
+        legend.title=element_blank(),
         plot.title = element_text(hjust = 0.5),
         panel.grid.major.x=element_blank(),
         panel.grid.minor.x=element_blank(),
@@ -341,9 +400,9 @@ app$callback(
         panel.grid.minor.y=element_blank(),
         panel.background=element_rect(fill="white"),
         axis.line = element_line(colour = 'black'),
-        axis.title.x = element_text(face = 'bold', vjust=-0.5), axis.title.y=element_text(vjust=0.1)
+        axis.title.x = element_text(vjust=-0.5), axis.title.y=element_text(vjust=0.1)
       )
-    ggplotly(p)
+    return(ggplotly(chart))
   }
 )
 
@@ -352,13 +411,13 @@ app$callback(
   list(input('player-widget', 'value'),
        input('stage-widget', 'value')
   ),
-  function(input1, input2) {
-    p <- ggplot(subset(chart_3,Player == input1 & Stage == input2)) + 
+  function(xcol, ycol){
+    chart <- ggplot(subset(chart_3, Player == xcol & Stage == ycol)) +
       aes(x = Season, y = Rebounds_per_game,  fill = Rebound_type) +
-      stat_summary(fun = mean, position = 'stack', geom = 'bar') +
+      geom_bar(position="stack", stat="identity") +
       ylab("Rebounds") +
       ggtitle('Average Rebounds by Season') +
-      #scale_fill_manual("Points_type", values = c('Defensive Rebounds' = 'steelblue2', 'Offensive Rebounds' = 'darkorange')) + 
+      scale_fill_manual("Rebound_type", values = c('Defensive Rebounds' = 'steelblue2', 'Offensive Rebounds' = 'darkorange')) + 
       scale_x_continuous(breaks = chart_3$Season) +
       theme(
         axis.text.x = element_text(angle = 90),
@@ -372,8 +431,8 @@ app$callback(
         panel.background=element_rect(fill="white"),
         axis.line = element_line(colour = 'black'),
         axis.title.x = element_text(vjust=-0.5), axis.title.y=element_text(vjust=0.1)
-      ) 
-    ggplotly(p)
+      )
+    return(ggplotly(chart) %>% layout(legend = list(orientation = 'h', y= -0.2)))
   }
 )
 
@@ -382,18 +441,18 @@ app$callback(
   list(input('player-widget', 'value'),
        input('stage-widget', 'value')
   ),
-  function(input1, input2) {
-    p <- ggplot(subset(chart_4,Player == input1 & Stage == input2)) + 
-      aes(x = Season, y = per_game, colour = Blocks.Steals) +
-      stat_summary(fun = mean, geom = 'line', size =2) +
+  function(xcol, ycol){
+    chart <- ggplot(subset(chart_4,Player == xcol & Stage == ycol)) + 
+      aes(x = Season, y = per_game, color = Blocks.Steals) +
+      stat_summary(fun = mean, geom = 'line', size=1) +
       ylab("Count") +
       ggtitle('Average Blocks & Steals by Season') +
-      scale_x_continuous(breaks = chart_2$Season) +
+      scale_color_manual("Blocks.Steals", values = c('Blocks' = 'steelblue2', 'Steals' = 'darkorange')) +
+      scale_x_continuous(breaks = chart_4$Season) +
       theme(
         axis.text.x = element_text(angle = 90),
         legend.position="bottom",
         legend.title=element_blank(),
-        legend.key = element_rect(fill='white'),
         plot.title = element_text(hjust = 0.5),
         panel.grid.major.x=element_blank(),
         panel.grid.minor.x=element_blank(),
@@ -401,10 +460,9 @@ app$callback(
         panel.grid.minor.y=element_blank(),
         panel.background=element_rect(fill="white"),
         axis.line = element_line(colour = 'black'),
-        axis.title.x = element_text(face = 'bold', vjust=-0.5), axis.title.y=element_text(vjust=0.1)
-      ) +
-      guides(size = 'none', colour = 'legend')
-    ggplotly(p)
+        axis.title.x = element_text(vjust=-0.5), axis.title.y=element_text(vjust=0.1)
+      )
+    return(ggplotly(chart) %>% layout(legend = list(orientation = 'h', y= -0.2)))
   }
 )
 
@@ -414,18 +472,20 @@ app$callback(
   list(input('player-widget', 'value'),
        input('stage-widget', 'value')
   ),
-  function(input1, input2) {
-    p <- ggplot(subset(chart_5,Player == input1 & Stage == input2)) + 
-      aes(x = Season, y = per_game, colour = Turnovers.Fouls) +
-      stat_summary(fun = mean, geom = 'line', size =2) +
+  function(xcol, ycol){
+    chart <- ggplot(subset(chart_5,Player == xcol & Stage == ycol)) + 
+      aes(x = Season, y = per_game, color = Turnovers.Fouls) +
+      stat_summary(fun = mean, geom = 'line', size=1) +
       ylab("Count") +
-      ggtitle('Average Turnovers and Fouls by Season') +
-      scale_x_continuous(breaks = chart_2$Season) +
+      ggtitle('Average Turnovers & Fouls by Season') +
+      scale_color_manual("Turnovers.Fouls", values = c('Fouls' = 'steelblue2', 'Turnovers' = 'darkorange')) +
+      # maximum value for turnovers or fouls in our dataset is 6.25
+      ylim(0, 6.25) +
+      scale_x_continuous(breaks = chart_5$Season) +
       theme(
         axis.text.x = element_text(angle = 90),
         legend.position="bottom",
         legend.title=element_blank(),
-        legend.key = element_rect(fill='white'),
         plot.title = element_text(hjust = 0.5),
         panel.grid.major.x=element_blank(),
         panel.grid.minor.x=element_blank(),
@@ -433,10 +493,136 @@ app$callback(
         panel.grid.minor.y=element_blank(),
         panel.background=element_rect(fill="white"),
         axis.line = element_line(colour = 'black'),
-        axis.title.x = element_text(face = 'bold', vjust=-0.5), axis.title.y=element_text(vjust=0.1)
-      ) +
-      guides(size = 'none', colour = 'legend')
-    ggplotly(p)
+        axis.title.x = element_text(vjust=-0.5), axis.title.y=element_text(vjust=0.1)
+      )
+    return(ggplotly(chart) %>% layout(legend = list(orientation = 'h', y= -0.2)))
+  }
+)
+
+app$callback(
+  output('chart-11', 'figure'),
+  list(input('player-widget-2', 'value'),
+       input('stage-widget-2', 'value')
+  ),
+  function(xcol, ycol){
+  chart <- ggplot(subset(chart_11,Player == xcol & Stage == ycol)) + 
+    aes(x = Season, y = per_game, color = X2PT_3PT_eFG) +
+    stat_summary(fun = mean, geom = 'line', size=1.0) +
+    ylab("Shooting Percentage") +
+    ggtitle('Average Shooting Percentages by Season') +
+    scale_color_manual("X2PT_3PT_eFG", values = c('2PT_%' = 'steelblue2', '3PT_%' = 'darkorange', 'eFG_%' = 'darkred')) +
+    scale_x_continuous(breaks = chart_11$Season) +
+    theme(
+      axis.text.x = element_text(angle = 90),
+      legend.position="bottom",
+      legend.title=element_blank(),
+      plot.title = element_text(hjust = 0.5),
+      panel.grid.major.x=element_blank(),
+      panel.grid.minor.x=element_blank(),
+      panel.grid.major.y=element_line(colour = 'lightgrey'),
+      panel.grid.minor.y=element_blank(),
+      panel.background=element_rect(fill="white"),
+      axis.line = element_line(colour = 'black'),
+      axis.title.x = element_text(vjust=-0.5), axis.title.y=element_text(vjust=0.1)
+    )
+  return(ggplotly(chart) %>% layout(legend = list(orientation = 'h', y= -0.2)))
+  }
+)
+
+
+# True Shooting Percentage by Season (chart 12) NOTE y scale is fixed at 0. I couldn't get it to be 'free'
+app$callback(
+  output('chart-12', 'figure'),
+  list(input('player-widget-2', 'value'),
+       input('stage-widget-2', 'value')
+  ),
+  function(xcol, ycol){
+  chart <- ggplot(subset(chart_12, Player == xcol & Stage == ycol)) + 
+    aes(x = Season, y = True.shooting.percentage) +
+    geom_bar(stat="identity", fill="steelblue2") +
+    ylab("True Shooting Percentage") +
+    ggtitle('True Shooting Percentage by Season') +
+    scale_x_continuous(breaks = chart_12$Season) +
+    theme(
+      axis.text.x = element_text(angle = 90),
+      legend.position="none",
+      legend.title=element_blank(),
+      plot.title = element_text(hjust = 0.5),
+      panel.grid.major.x=element_blank(),
+      panel.grid.minor.x=element_blank(),
+      panel.grid.major.y=element_line(colour = 'lightgrey'),
+      panel.grid.minor.y=element_blank(),
+      panel.background=element_rect(fill="white"),
+      axis.line = element_line(colour = 'black'),
+      axis.title.x = element_text(vjust=-0.5), axis.title.y=element_text(vjust=0.1)
+    )
+  return(ggplotly(chart))
+  }
+)
+
+# Player Productivity by Season (chart 13)
+
+app$callback(
+  output('chart-13', 'figure'),
+  list(input('player-widget-2', 'value'),
+       input('stage-widget-2', 'value')
+  ),
+  function(xcol, ycol){
+  chart <- ggplot(subset(chart_13, Player == xcol & Stage == ycol)) + 
+    aes(x = Season, y = Game.Score) +
+    geom_bar(stat="identity", fill="steelblue2") +
+    ylab("Game Score") +
+    ggtitle('Player Productivity by Season') +
+    scale_x_continuous(breaks = chart_13$Season) +
+    theme(
+      axis.text.x = element_text(angle = 90),
+      legend.position="none",
+      legend.title=element_blank(),
+      plot.title = element_text(hjust = 0.5),
+      panel.grid.major.x=element_blank(),
+      panel.grid.minor.x=element_blank(),
+      panel.grid.major.y=element_line(colour = 'lightgrey'),
+      panel.grid.minor.y=element_blank(),
+      panel.background=element_rect(fill="white"),
+      axis.line = element_line(colour = 'black'),
+      axis.title.x = element_text(vjust=-0.5), axis.title.y=element_text(vjust=0.1)
+    )
+  return(ggplotly(chart))
+  }
+)
+
+# Player Productivity by Minutes Played (chart 14)
+
+app$callback(
+  output('chart-11', 'figure'),
+  input('player-widget-2', 'value'),
+  function(xcol){
+  sub_chart = subset(chart_13, Player == xcol)
+  min_min <- trunc(min(sub_chart$Minutes.Played),0)
+  max_min <- trunc(max(sub_chart$Minutes.Played) + 1,0)
+  min_range <- seq(min_min, max_min, 1)
+  chart <- ggplot(sub_chart) + 
+    aes(x = Minutes.Played, y = Game.Score) +
+    geom_point(aes(colour = Stage), size=1.8) +
+    ylab("Game Score") +
+    xlab("Minutes Played") +
+    ggtitle('Player Productivity by Minutes Played') +
+    scale_color_manual("Stage", values = c('Playoffs' = 'steelblue2', 'Regular_Season' = 'darkorange')) +
+    scale_x_continuous(breaks = min_range) +
+    theme(
+      axis.text.x = element_text(angle = 0),
+      legend.position="bottom",
+      legend.title=element_blank(),
+      plot.title = element_text(hjust = 0.5),
+      panel.grid.major.x=element_line(colour = 'lightgrey'),
+      panel.grid.minor.x=element_blank(),
+      panel.grid.major.y=element_line(colour = 'lightgrey'),
+      panel.grid.minor.y=element_blank(),
+      panel.background=element_rect(fill="white"),
+      axis.line = element_line(colour = 'black'),
+      axis.title.x = element_text(vjust=-0.5), axis.title.y=element_text(vjust=0.1)
+    )
+  return(ggplotly(chart)%>% layout(legend = list(orientation = 'h', y= -0.2)))
   }
 )
 
