@@ -16,4 +16,4 @@ This NBA Analytics dashboard enables the users to analyze player statistics as w
 
 ![Dashboard prototype](https://raw.githubusercontent.com/ubco-mds-2020-labs/nba_analytics/main/Dashboard_prototype.png)
 
-
+Dashboard app can be found here : [NBA Analytics Heroku R App](http://nba-dashboard-r.herokuapp.com/). The code for the app is in the main branch of this repository as [app.R](https://github.com/ubco-mds-2020-labs/dashboard-project---r-nba-dashboard/blob/master/app.R).
